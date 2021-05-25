@@ -1,6 +1,8 @@
 
-#flaskAPI
-###This is an API developed using Python's Flask framework.
+# flaskAPI
+
+### This is an API developed using Python's Flask framework.
+
 #### It makes use of advanced data structures like linked list, hash table, binary search tree
 
 ``dummy data.py`` is used to populate the database
