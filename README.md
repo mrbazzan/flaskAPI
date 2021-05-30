@@ -76,4 +76,3 @@ python server.py
 - This is used to delete the last five blog posts that were posted.
 - It makes use of Stack data structure(append to the top and remove from the top).
     The newest post is always on top.
-
