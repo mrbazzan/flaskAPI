@@ -31,6 +31,8 @@ class BinarySearchTree:
             self._insert_recursive(data_, self.root)  # only be used by insert method(the `_` in front)
 
     def _search_recursive(self, id, node):
+        if node is None:
+            return
         if id == node.data['id']:
             return node.data
 

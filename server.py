@@ -10,11 +10,14 @@ from flask import Flask, jsonify, request
 import linked_list
 import hash_table
 import binary_search_tree
+import custom_queue
+import stack
 from random import shuffle
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///flaskapi.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["JSONIFY_PRETTYPRINT_REGULAR"] = True
 
 
 # enforce foreign keys for sqlite3, it isn't enforced automatically
@@ -27,7 +30,7 @@ def _set_sqlite_pragma(db_api_conn, conn_record):
 
 
 db = SQLAlchemy(app)
-now = datetime.now()
+# from server import db; db.create_all()
 
 
 # models
@@ -111,7 +114,7 @@ def get_one_user(user_id):
     return jsonify(all_users.get_user_by_id(user_id)), 200
 
 
-@app.route('/user/<int:user_id>', methods=['DELETE'])  # TODO: download postman
+@app.route('/user/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
     user = User.query.filter_by(id=user_id).first()
     db.session.delete(user)
@@ -129,7 +132,7 @@ def create_blog_post(user_id):
     hash_ = hash_table.HashTable(10)
     hash_.add_key_value('title', data['title'])
     hash_.add_key_value('body', data['body'])
-    hash_.add_key_value('date', now)
+    hash_.add_key_value('date', datetime.now())
     hash_.add_key_value('user_id', user_id)
 
     post = BlogPost(
@@ -147,7 +150,6 @@ def create_blog_post(user_id):
 def get_one_post(blog_id):
     posts = BlogPost.query.all()
     shuffle(posts)
-
     bst = binary_search_tree.BinarySearchTree()
     for post in posts:
         bst.insert(
@@ -164,10 +166,45 @@ def get_one_post(blog_id):
     return jsonify(post), 200
 
 
-# @app.route()
-# def delete_one_post():
-#     pass
+@app.route("/blog/numeric_body", methods=["GET"])
+def get_numeric_post_bodies():
+    posts = BlogPost.query.all()
+    queue = custom_queue.Queue()
+    for post in posts:
+        queue.enqueue(post)
+
+    return_list = []
+    for _ in range(len(posts)):
+        post = queue.dequeue()
+        numeric_body = 0
+        for char in post.data.body:
+            numeric_body += ord(char)
+        post.data.body = numeric_body
+        return_list.append(
+            {
+                "id": post.data.id,
+                "title": post.data.title,
+                "body": post.data.body,
+                "user_id": post.data.user_id
+            }
+        )
+    return jsonify(return_list)
+
+
+@app.route("/blog/delete_last_five_post", methods=["DELETE"])
+def delete_last_five_post():
+    posts = BlogPost.query.all()
+    all_post = stack.Stack()
+    for post in posts:
+        all_post.push(post)
+
+    for _ in range(5):
+        deleted_post = all_post.pop()
+        db.session.delete(deleted_post.data)
+        db.session.commit()
+
+    return jsonify({"message": "successfully deleted."})
 
 
 if __name__ == '__main__':
-    app.run(debug=True)  # TODO: Change the server to *waitress*
+    app.run()

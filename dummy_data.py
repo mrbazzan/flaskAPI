@@ -44,7 +44,7 @@ for _ in range(200):
 
 for _ in range(200):
     new_post = BlogPost(
-        title=fake.paragraph(2),
+        title=fake.paragraph(1),
         body=fake.text(),
         date=fake.date_time(),
         user_id=randrange(1, 200)

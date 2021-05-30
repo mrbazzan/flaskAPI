@@ -1,6 +1,8 @@
 
-#flaskAPI
-###This is an API developed using Python's Flask framework.
+# flaskAPI
+
+### This is an API developed using Python's Flask framework.
+
 #### It makes use of advanced data structures like linked list, hash table, binary search tree
 
 ``dummy data.py`` is used to populate the database
@@ -10,6 +12,10 @@
 ``hash_table.py`` contains the Hash Table structure
 
 ``binary_search_tree.py`` contains the Binary Tree structue
+
+``custom_queue.py`` contains the Queue structure
+
+``stack.py`` contains the Stack structure
 
 Create all the tables defined in the classes(``User, BlogPost``)
 
@@ -29,9 +35,8 @@ python server.py
 
 #### Routes
 
-#### `` \user ``   
+#### `` /user ``   
 - method = POST
-
 - This is used to create a user. It requires parameter; name, email, phone number.
 
 #### `` /user/descending_id ``
@@ -59,3 +64,16 @@ python server.py
 - method = GET
 - This is used to get a blog post. The BLOG_ID is the id of the blog to be retrieved.
 - It makes use of binary search tree data structure.
+
+#### `` /blog/numeric_body``
+- method = GET
+- This is used to get a blog post.
+- It makes use of queue data structure(append to the end and remove from the top)
+    e.g people buying coffee from a coffee stand; New folks join the line from the end and those that have been attended to(in front) leave the line.
+
+#### `` /blog/delete_last_five_post``
+- method = DELETE
+- This is used to delete the last five blog posts that were posted.
+- It makes use of Stack data structure(append to the top and remove from the top).
+    The newest post is always on top.
+
